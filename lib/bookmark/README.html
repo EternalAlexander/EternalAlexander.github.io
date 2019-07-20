@@ -489,8 +489,10 @@
           
 
   
-    <div class="comments" id="gitalk-container">
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80NTQ2MC8yMTk3Mg=="></div>
     </div>
+
   
 
 
@@ -875,48 +877,22 @@
   
     
 
-<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  
 
-
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-
-
-<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
 
 <script>
-  var gitalk = new Gitalk({
-    clientID: '49391cc3a2f8df3c5ed4',
-    clientSecret: '01d3fb47e90bdbad67865d204afedff5c6142fea',
-    repo: 'EternalAlexander.github.io',
-    owner: 'EternalAlexander',
-    admin: ['EternalAlexander'],
-    id: md5(location.pathname),
-    
-      language: window.navigator.language || window.navigator.userLanguage,
-    
-    distractionFreeMode: ''
-  });
-  gitalk.render('gitalk-container');
+  window.livereOptions = {
+    refer: 'lib/bookmark/README.html'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
 </script>
-
-
-  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-   <script type="text/javascript">
-        var gitalk = new Gitalk({
-          clientID: '',
-          clientSecret: '',
-          repo: 'EternalAlexander.github.io',
-          owner: '',
-          admin: [''],
-          id: location.pathname,
-          distractionFreeMode: ''
-        })
-        gitalk.render('gitalk-container')           
-       </script>
-
 
   
 
