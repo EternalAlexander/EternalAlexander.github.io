@@ -871,14 +871,14 @@
 
 <script>
   var gitalk = new Gitalk({
-    clientID: '99b937291aa1a112e890',
-    clientSecret: 'b46b4f5bbbcb65674e976f7abba198a8fd0cadd4',
+    clientID: '05db4038b92ae4e1e0d6',
+    clientSecret: 'ce0b6d1eaf147cd751fbf13d7f0a431b333c448d',
     repo: 'EternalAlexander.github.io',
     owner: 'EternalAlexander',
     admin: ['EternalAlexander'],
     id: md5(location.pathname),
     
-      language: 'zh-CN',
+      language: window.navigator.language || window.navigator.userLanguage,
     
     distractionFreeMode: 'true'
   });
