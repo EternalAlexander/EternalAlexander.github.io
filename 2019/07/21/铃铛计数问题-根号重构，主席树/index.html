@@ -93,18 +93,18 @@
   };
 </script>
 
-  <meta name="description" content="​    题目链接">
+  <meta name="description" content="题目链接题目大意​    给一棵树，点带权，$size(i)$表示$i$号点子树中节点的权值和，多组询问修改点权或求$\sum_{i=l}^r size(i)$。">
 <meta name="keywords" content="题解,树上高论,数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="铃铛计数问题 (根号重构，主席树)">
 <meta property="og:url" content="http://eternalalexander.github.io/2019/07/21/铃铛计数问题-根号重构，主席树/index.html">
 <meta property="og:site_name" content="EternalAlexander的博客">
-<meta property="og:description" content="​    题目链接">
+<meta property="og:description" content="题目链接题目大意​    给一棵树，点带权，$size(i)$表示$i$号点子树中节点的权值和，多组询问修改点权或求$\sum_{i=l}^r size(i)$。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-21T01:54:29.308Z">
+<meta property="og:updated_time" content="2019-07-21T02:02:52.627Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="铃铛计数问题 (根号重构，主席树)">
-<meta name="twitter:description" content="​    题目链接">
+<meta name="twitter:description" content="题目链接题目大意​    给一棵树，点带权，$size(i)$表示$i$号点子树中节点的权值和，多组询问修改点权或求$\sum_{i=l}^r size(i)$。">
 
 
 
@@ -365,7 +365,7 @@
                 
               
 
-              <time title="创建时间：2019-07-21 09:37:03 / 修改时间：09:54:29" itemprop="dateCreated datePublished" datetime="2019-07-21T09:37:03+08:00">2019-07-21</time>
+              <time title="创建时间：2019-07-21 09:37:03 / 修改时间：10:02:52" itemprop="dateCreated datePublished" datetime="2019-07-21T09:37:03+08:00">2019-07-21</time>
             </span>
           
 
@@ -417,14 +417,13 @@
       
 
       
-        <p>​    <a href="https://www.luogu.org/problemnew/show/U72118" target="_blank" rel="noopener">题目链接</a></p>
+        <h3 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a><a href="https://www.luogu.org/problemnew/show/U72118" target="_blank" rel="noopener">题目链接</a></h3><h3 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h3><p>​    给一棵树，点带权，$size(i)$表示$i$号点子树中节点的权值和，多组询问修改点权或求$\sum_{i=l}^r size(i)$。</p>
 <a id="more"></a>
 
-<p>​    题意是给一棵树，点带权，$size(i)$表示$i$号点子树中节点的权值和，多组询问修改点权或求$\sum_{i=l}^r size(i)$。</p>
-<p>​    如果没有修改操作，可以一次dfs预处理子树大小然后前缀和即可。</p>
+<h3 id="题目解法"><a href="#题目解法" class="headerlink" title="题目解法"></a>题目解法</h3><p>​    如果没有修改操作，可以一次dfs预处理子树大小然后前缀和即可。</p>
 <p>​    考虑对于当前询问操作$[l, r]$之前的一次修改操作$[u, \Delta w]$，它对当前答案的贡献是容易统计的，即为$u$到根的路径中编号在$[l,r]$中的点的个数，可以采用主席树求出。</p>
 <p>​    考虑根号重构，当之前未被处理的修改操作大于$B$时，重新dfs整棵树，预处理前缀和，并将之前所有操作标记为已处理。每次询问时首先前缀和求出已经被处理的修改操作的答案，然后对于之前未被处理的操作主席树统计贡献。复杂度为$O(qBlogn+qn/B)$。认为$n,q$同级，取$B=\frac{\sqrt{nlogn}}{logn}$可以得到$O(n\sqrt{nlogn})$的垃圾做法。因为常数差异实际块大小与理论最优略有不同，适当卡常并调整块大小可以通过本题。</p>
-<p>​    </p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>​    </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> maxn 100005</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ll long long</span></span><br><span class="line"><span class="keyword">int</span> n,q,opt,l,r,p[maxn],v[maxn],cnt=<span class="number">0</span>,tail=<span class="number">0</span>,head[maxn]=&#123;<span class="number">0</span>&#125;,root[maxn],</span><br><span class="line">rt,w[maxn],tot[maxn&lt;&lt;<span class="number">5</span>]=&#123;<span class="number">0</span>&#125;,ch[maxn&lt;&lt;<span class="number">5</span>][<span class="number">2</span>]=&#123;<span class="number">0</span>&#125;,rank[maxn]=&#123;<span class="number">0</span>&#125;,fa[maxn]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">unsigned</span> ll sum[maxn]=&#123;<span class="number">0</span>&#125;,size[maxn]=&#123;<span class="number">0</span>&#125;,dfn[maxn]=&#123;<span class="number">0</span>&#125;,idx=<span class="number">0</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> v,next;</span><br><span class="line">&#125;edges[maxn&lt;&lt;<span class="number">1</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cmp</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span> </span>&#123;<span class="keyword">return</span> dfn[a]&gt;dfn[b];&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x=<span class="number">0</span>;<span class="keyword">char</span> c=getchar();</span><br><span class="line">    <span class="keyword">while</span> (c&gt;<span class="string">'9'</span>||c&lt;<span class="string">'0'</span>) c=getchar();</span><br><span class="line">    <span class="keyword">while</span> (<span class="string">'0'</span>&lt;=c&amp;&amp;c&lt;=<span class="string">'9'</span>) &#123;x=(x&lt;&lt;<span class="number">3</span>)+(x&lt;&lt;<span class="number">1</span>)+c-<span class="string">'0'</span>;c=getchar();&#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">add_edge</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    edges[++tail].v=v;</span><br><span class="line">    edges[tail].next=head[u];</span><br><span class="line">    head[u]=tail;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs1</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    fa[u]=f;dfn[u]=++idx;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">register</span> <span class="keyword">int</span> i=head[u];i;i=edges[i].next) &#123;</span><br><span class="line">        <span class="keyword">int</span> v=edges[i].v;</span><br><span class="line">        <span class="keyword">if</span> (v!=f) &#123;dfs1(v,u);&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rebuild</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">memset</span>(size,<span class="number">0</span>,<span class="keyword">sizeof</span>(size));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">register</span> <span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        size[rank[i]]+=w[rank[i]];size[fa[rank[i]]]+=size[rank[i]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">register</span> <span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) sum[i]=sum[i<span class="number">-1</span>]+size[i];</span><br><span class="line">    cnt=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> p,<span class="keyword">int</span> rt)</span> </span>&#123; <span class="comment">//debug</span></span><br><span class="line">    <span class="keyword">int</span> nrt=++tail;</span><br><span class="line">    ch[nrt][<span class="number">0</span>]=ch[rt][<span class="number">0</span>];ch[nrt][<span class="number">1</span>]=ch[rt][<span class="number">1</span>]; tot[nrt]=tot[rt]+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span> nrt;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (p&lt;=mid) ch[nrt][<span class="number">0</span>]=insert(l,mid,p,ch[rt][<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">else</span> ch[nrt][<span class="number">1</span>]=insert(mid+<span class="number">1</span>,r,p,ch[rt][<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">return</span> nrt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    root[u]=insert(<span class="number">1</span>,n,u,root[f]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">register</span> <span class="keyword">int</span> i=head[u];i;i=edges[i].next) &#123;</span><br><span class="line">        <span class="keyword">int</span> v=edges[i].v;</span><br><span class="line">        <span class="keyword">if</span> (v!=f) dfs2(v,u);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> rt)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l&gt;R||r&lt;L||!rt) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (l&lt;=L&amp;&amp;R&lt;=r) <span class="keyword">return</span> tot[rt];</span><br><span class="line">    <span class="keyword">return</span> query(l,r,L,(L+R)&gt;&gt;<span class="number">1</span>,ch[rt][<span class="number">0</span>])+query(l,r,((L+R)&gt;&gt;<span class="number">1</span>)+<span class="number">1</span>,R,ch[rt][<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;q);</span><br><span class="line">    <span class="keyword">int</span> size=(<span class="keyword">int</span>)<span class="built_in">std</span>::<span class="built_in">sqrt</span>(q)*<span class="number">0.85</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;w[i]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> u,v; rank[i]=i;</span><br><span class="line">        u=read();v=read();</span><br><span class="line">        <span class="keyword">if</span> (!u||!v) rt=u+v;</span><br><span class="line">        <span class="keyword">else</span> &#123;add_edge(u,v);add_edge(v,u);&#125;</span><br><span class="line">    &#125; dfs2(rt,<span class="number">0</span>);dfs1(rt,<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">std</span>::sort(rank+<span class="number">1</span>,rank+n+<span class="number">1</span>,cmp);</span><br><span class="line">    rebuild();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=q;++i) &#123;</span><br><span class="line">        opt=read();l=read();r=read();</span><br><span class="line">        <span class="keyword">if</span> (opt==<span class="number">1</span>) &#123;</span><br><span class="line">            p[++cnt]=l;v[cnt]=r-w[l]; w[l]=r;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">unsigned</span> ll ans=<span class="number">0</span>;</span><br><span class="line">            ans=sum[r]-sum[l<span class="number">-1</span>];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">register</span> <span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=cnt;++i) ans+=(ll)query(l,r,<span class="number">1</span>,n,root[p[i]])*(ll)v[i];</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">        &#125; <span class="keyword">if</span> (i%size==<span class="number">0</span>) rebuild();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -531,8 +530,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -658,6 +666,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目链接"><span class="nav-number">1.</span> <span class="nav-text">题目链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目大意"><span class="nav-number">2.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目解法"><span class="nav-number">3.</span> <span class="nav-text">题目解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">4.</span> <span class="nav-text">代码</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
