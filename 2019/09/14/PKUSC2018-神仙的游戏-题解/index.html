@@ -93,18 +93,18 @@
   };
 </script>
 
-  <meta name="description" content="题目链接题目大意​    给两棵树$T1,T2$，求$T1$中的每条路径上的所有点对在$T2$上的lca的深度之和的和。">
-<meta name="keywords" content="题解,树上高论">
+  <meta name="description" content="​    题目链接 题目大意​    给一个包含01和?的串，求当?可能是0或者1时，有哪些长度可能成为这个串的border。">
+<meta name="keywords" content="字符串,题解,多项式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【XR-2【永恒】】(dsu on tree)">
-<meta property="og:url" content="http://eternalalexander.github.io/2019/07/21/【XR-2【永恒】】-dsu-on-tree/index.html">
+<meta property="og:title" content="[PKUSC2018]神仙的游戏 题解">
+<meta property="og:url" content="http://eternalalexander.github.io/2019/09/14/PKUSC2018-神仙的游戏-题解/index.html">
 <meta property="og:site_name" content="EternalAlexander的博客">
-<meta property="og:description" content="题目链接题目大意​    给两棵树$T1,T2$，求$T1$中的每条路径上的所有点对在$T2$上的lca的深度之和的和。">
+<meta property="og:description" content="​    题目链接 题目大意​    给一个包含01和?的串，求当?可能是0或者1时，有哪些长度可能成为这个串的border。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-21T02:06:46.393Z">
+<meta property="og:updated_time" content="2019-09-14T02:54:53.866Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【XR-2【永恒】】(dsu on tree)">
-<meta name="twitter:description" content="题目链接题目大意​    给两棵树$T1,T2$，求$T1$中的每条路径上的所有点对在$T2$上的lca的深度之和的和。">
+<meta name="twitter:title" content="[PKUSC2018]神仙的游戏 题解">
+<meta name="twitter:description" content="​    题目链接 题目大意​    给一个包含01和?的串，求当?可能是0或者1时，有哪些长度可能成为这个串的border。">
 
 
 
@@ -112,7 +112,7 @@
 
   
   
-  <link rel="canonical" href="http://eternalalexander.github.io/2019/07/21/【XR-2【永恒】】-dsu-on-tree/">
+  <link rel="canonical" href="http://eternalalexander.github.io/2019/09/14/PKUSC2018-神仙的游戏-题解/">
 
 
 
@@ -123,7 +123,7 @@
 </script>
 
   
-  <title>【XR-2【永恒】】(dsu on tree) | EternalAlexander的博客</title>
+  <title>[PKUSC2018]神仙的游戏 题解 | EternalAlexander的博客</title>
   
 
 
@@ -329,7 +329,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://eternalalexander.github.io/2019/07/21/【XR-2【永恒】】-dsu-on-tree/">
+    <link itemprop="mainEntityOfPage" href="http://eternalalexander.github.io/2019/09/14/PKUSC2018-神仙的游戏-题解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="EternalAlexander">
@@ -346,7 +346,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">【XR-2【永恒】】(dsu on tree)
+          <h1 class="post-title" itemprop="name headline">[PKUSC2018]神仙的游戏 题解
 
               
             
@@ -372,7 +372,7 @@
                 
               
 
-              <time title="创建时间：2019-07-21 09:20:13 / 修改时间：10:06:46" itemprop="dateCreated datePublished" datetime="2019-07-21T09:20:13+08:00">2019-07-21</time>
+              <time title="创建时间：2019-09-14 10:41:52 / 修改时间：10:54:53" itemprop="dateCreated datePublished" datetime="2019-09-14T10:41:52+08:00">2019-09-14</time>
             </span>
           
 
@@ -424,15 +424,16 @@
       
 
       
-        <h3 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a><a href="https://www.luogu.org/problemnew/show/P5439" target="_blank" rel="noopener">题目链接</a></h3><h3 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h3><p>​    给两棵树$T1,T2$，求$T1$中的每条路径上的所有点对在$T2$上的lca的深度之和的和。</p>
+        <p>​    <a href="https://www.luogu.org/problem/P5466" target="_blank" rel="noopener">题目链接</a></p>
+<h3 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h3><p>​    给一个包含01和?的串，求当?可能是0或者1时，有哪些长度可能成为这个串的border。</p>
 <a id="more"></a>
 
-<h3 id="题目解法"><a href="#题目解法" class="headerlink" title="题目解法"></a>题目解法</h3><p>​    出题人在NOI的时候告诉了我这道题，然后就口胡了一个和标算不太一样的做法。    </p>
-<p>​    首先考虑点对的贡献，即$\sum depth(lca(u,v))$如何处理。</p>
-<p>​    对第一棵树重链剖分，然后对每一个节点$u$考虑lca是$u$的所有点对的贡献。依次dfs节点$u$的每一棵子树中的所有节点，对于dfs到的节点$v$，因为点对有序，只需要考虑$u$的所有子树中$v$所在的子树之后的子树中的节点与$v$匹配产生的贡献，显然这些点对应dfs序上一个区间，求点到区间lca的深度和可以采用[LNOI2014 LCA] 的计算方法。然后发现显然最后一个子树不需要dfs，我们把重子树放到最后一个就能类似dsu on tree的做了。最后对于根节点单独处理一下。</p>
-<p>​    然后考虑扩展到所有路径的所有点对的和。对于点对$(u, v)$，显然它们被$size(u)\times size(v)$条路径包含，贡献为$size(u)\times size(v) \times depth(lca(u,v))$ 。在上面dsu on tree的过程中我们枚举$u$，可以在询问区间lca的时候可以直接乘上$size(u)$，然后考虑被询问的$v$，我们令$v$被作为lca端点计算的时候贡献乘以$size(v)$即可。如果类似[LNOI2014 LCA]地采用lct解法回答区间lca询问，在操作时将当前点到根的所有点权值$+1$改成$+size(v)$就能处理了。</p>
-<p>​    认为$n,m$同级的话，复杂度$nlog^2n$。</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>​    咕咕咕</p>
+<h3 id="题目解法"><a href="#题目解法" class="headerlink" title="题目解法"></a>题目解法</h3><p>​    首先根据border引理，一个串有长度为 $len$ 的border当且仅当这个串模 $n-len$ 同构。</p>
+<p>​    当 $len \leq \frac{n}{2}$ 时，显然这个串会被分为两段，此时显然成立。另一种情况画个图看一下哪些段必须想等就会发现成立。</p>
+<p>​    因此，这个串有长度为 $k​$ 的border当且仅当这个串不存在任意一对 $0,1​$ 的位置差是 $n-k​$ 的倍数。</p>
+<p>​    可以类似万径人踪灭地构造两个多项式 $ A=\sum_{i=0}^{n-1} [s_i=0]x^i, B=\sum_{i=0}^{n-1} [s_i=1]x^i$。翻转B然后卷积即可计算出位置差，然后调和级数枚举倍数即可。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> maxn 2000005</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ll long long</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> ouuan=<span class="number">167772161</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> p=ouuan;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> g=<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[maxn],b[maxn],rev[maxn]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">char</span> s[maxn];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">qpow</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (b==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> d=qpow(a,b&gt;&gt;<span class="number">1</span>);d=(ll)d*d%ouuan;</span><br><span class="line">	<span class="keyword">if</span> (b&amp;<span class="number">1</span>)d=(ll)d*a%ouuan;</span><br><span class="line">	<span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">NTT</span><span class="params">(<span class="keyword">int</span> *a,<span class="keyword">int</span> type,<span class="keyword">int</span> lim)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;lim;++i)rev[i]=(rev[i&gt;&gt;<span class="number">1</span>]&gt;&gt;<span class="number">1</span>)|((i&amp;<span class="number">1</span>)*(lim&gt;&gt;<span class="number">1</span>));</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;lim;++i)<span class="keyword">if</span> (i&lt;rev[i])<span class="built_in">std</span>::swap(a[i],a[rev[i]]);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> len=<span class="number">1</span>;len&lt;lim;len&lt;&lt;=<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">int</span> wn=qpow(g,(ouuan<span class="number">-1</span>)/(len&lt;&lt;<span class="number">1</span>)),r=len&lt;&lt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span> (type==<span class="number">-1</span>)wn=qpow(wn,ouuan<span class="number">-2</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;lim;j+=r)</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>,w=<span class="number">1</span>;k&lt;len;++k,w=(ll)w*wn%ouuan)&#123;</span><br><span class="line">			<span class="keyword">int</span> x=a[j+k],y=(ll)w*a[j+k+len]%ouuan;</span><br><span class="line">			a[j+k]=(x+y)%ouuan;a[j+k+len]=(x-y+ouuan)%ouuan;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">if</span> (type==<span class="number">-1</span>)<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;lim;++i)a[i]=(ll)a[i]*qpow(lim,ouuan<span class="number">-2</span>)%ouuan;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s+<span class="number">1</span>);<span class="keyword">int</span> n=<span class="built_in">std</span>::<span class="built_in">strlen</span>(s+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)a[i<span class="number">-1</span>]=(s[i]==<span class="string">'0'</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)b[i<span class="number">-1</span>]=(s[n-i+<span class="number">1</span>]==<span class="string">'1'</span>);</span><br><span class="line">	<span class="keyword">int</span> lim=<span class="number">1</span>;<span class="keyword">while</span>(lim&lt;=n*<span class="number">2</span>)lim&lt;&lt;=<span class="number">1</span>;</span><br><span class="line">	NTT(a,<span class="number">1</span>,lim);NTT(b,<span class="number">1</span>,lim);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;lim;++i)a[i]=(ll)a[i]*b[i]%ouuan;</span><br><span class="line">	NTT(a,<span class="number">-1</span>,lim);</span><br><span class="line">	ll ans=(ll)n*n;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;++i)&#123;</span><br><span class="line">		<span class="keyword">int</span> flag=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j=i;j&lt;=n+<span class="number">1</span>;j+=i)flag|=a[j+n<span class="number">-1</span>]|a[n-j<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span> (!flag)ans^=(ll)(n-i)*(n-i);</span><br><span class="line">	&#125;<span class="built_in">printf</span>(<span class="string">"%lld"</span>,ans);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -463,9 +464,11 @@
         
         <div class="post-tags">
           
+            <a href="/tags/字符串/" rel="tag"># 字符串</a>
+          
             <a href="/tags/题解/" rel="tag"># 题解</a>
           
-            <a href="/tags/树上高论/" rel="tag"># 树上高论</a>
+            <a href="/tags/多项式/" rel="tag"># 多项式</a>
           
         </div>
       
@@ -478,8 +481,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/21/NOI2019-游记/" rel="next" title="NOI2019 游记">
-                <i class="fa fa-chevron-left"></i> NOI2019 游记
+              <a href="/2019/07/21/铃铛计数问题-根号重构，主席树/" rel="next" title="铃铛计数问题 (根号重构，主席树)">
+                <i class="fa fa-chevron-left"></i> 铃铛计数问题 (根号重构，主席树)
               </a>
             
           </div>
@@ -488,8 +491,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/21/ISIJ2019-Profit-二维数点/" rel="prev" title="ISIJ2019 Profit (二维数点)">
-                ISIJ2019 Profit (二维数点) <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/14/HEOI2016-TJOI2016-字符串-题解/" rel="prev" title="[HEOI2016/TJOI2016]字符串 题解">
+                [HEOI2016/TJOI2016]字符串 题解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -708,7 +711,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目链接"><span class="nav-number">1.</span> <span class="nav-text">题目链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目大意"><span class="nav-number">2.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目解法"><span class="nav-number">3.</span> <span class="nav-text">题目解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">4.</span> <span class="nav-text">代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目大意"><span class="nav-number">1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目解法"><span class="nav-number">2.</span> <span class="nav-text">题目解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a></li></ol></div>
             
 
           </div>
@@ -948,7 +951,7 @@
 
 <script>
   window.livereOptions = {
-    refer: '2019/07/21/【XR-2【永恒】】-dsu-on-tree/'
+    refer: '2019/09/14/PKUSC2018-神仙的游戏-题解/'
   };
   (function(d, s) {
     var j, e = d.getElementsByTagName(s)[0];
