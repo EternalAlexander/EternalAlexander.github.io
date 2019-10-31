@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文将从感性的角度分析后缀树，并不会严谨地论证自动机那一套理论。">
+<meta name="keywords" content="字符串,后缀树,教程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="炫酷后缀树魔术">
+<meta property="og:url" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/index.html">
+<meta property="og:site_name" content="EternalAlexander的博客">
+<meta property="og:description" content="本文将从感性的角度分析后缀树，并不会严谨地论证自动机那一套理论。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/banana1.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/banana2.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/banana4.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step1.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step2.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step3.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step4.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step5.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/step6.png">
+<meta property="og:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/suffixlink.png">
+<meta property="og:updated_time" content="2019-10-31T06:19:48.477Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="炫酷后缀树魔术">
+<meta name="twitter:description" content="本文将从感性的角度分析后缀树，并不会严谨地论证自动机那一套理论。">
+<meta name="twitter:image" content="http://eternalalexander.github.io/2019/10/31/后缀树简介/banana1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://eternalalexander.github.io/2019/10/31/后缀树简介/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>炫酷后缀树魔术 | EternalAlexander的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EternalAlexander的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">斜风细雨不须归</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/EternalAlexander" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalalexander.github.io/2019/10/31/后缀树简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="EternalAlexander">
+      <meta itemprop="description" content="一个彩笔的博客">
+      <meta itemprop="image" content="/images/a2.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EternalAlexander的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">炫酷后缀树魔术
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-31 14:12:39 / 修改时间：14:19:48" itemprop="dateCreated datePublished" datetime="2019-10-31T14:12:39+08:00">2019-10-31</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+                 阅读次数： 
+                <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+              </span>
+            </span>
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将从感性的角度分析后缀树，并不会严谨地论证自动机那一套理论。</p>
+<a id="more"></a>
+
+<h3 id="关于本文"><a href="#关于本文" class="headerlink" title="关于本文"></a>关于本文</h3><p>由于笔者水平有限，可能出现一些错误，欢迎讨论和指正。</p>
+<p>由于笔者其实不会 $\text{SAM}$ 和 $\text{SA}$，本文中一切关于 $\text{SAM}$ 和 $\text{SA}$ 的内容均不保证正确。</p>
+<h3 id="在你阅读之前"><a href="#在你阅读之前" class="headerlink" title="在你阅读之前"></a>在你阅读之前</h3><ul>
+<li>请确保你了解字符串及其相关内容的基本定义</li>
+<li>学习过字典树 (Trie)</li>
+<li>最好学习过至少一种后缀数据结构，最好学习过AC自动机和虚树</li>
+<li>不要阅读林厚从《高级数据结构》中的后缀树内容，更不要学习其中的代码</li>
+</ul>
+<h3 id="前置约定"><a href="#前置约定" class="headerlink" title="前置约定"></a>前置约定</h3><p>记 $\Sigma$ 为字符集， $|\Sigma|$ 为字符集大小，$|s|$ 为字符串 $s$ 的长度，$s[l \cdots r]$ 表示字符串 $s$ 中第 $l$ 个字符到第 $r$ 个字符顺序连接形成的子串。</p>
+<h3 id="后缀树是什么"><a href="#后缀树是什么" class="headerlink" title="后缀树是什么"></a>后缀树是什么</h3><p><strong>后缀树</strong> ($\text{Suffix Tree}$) 是一种字符串数据结构，常用于高速解决一些字符串问题。</p>
+<p>对于一个字符串，我们可以把它的所有后缀插入一棵字典树中。例如，对于串 <code>banana</code> ，将其所有后缀插入，将得到这样一棵字典树：</p>
+<p>​                                <img src="banana1.png" alt></p>
+<p>我们称其为串 <code>banana</code> 的后缀字典树。注意到在这棵树上有很多后缀并没有显示出来，例如 <code>na</code>，因为它被包含在了后缀 <code>nana</code> 中。为了解决这个问题，我们可以在串的最后加入一个终止符 <code>$</code>，使得所有后缀都显式地出现在树中。</p>
+<p><img src="banana2.png" alt></p>
+<p>在后缀字典树上，每个叶节点都代表了原串的一个后缀，每个节点到根的路径都是原串的后缀的前缀，即为原串的一个子串，而这个节点的子树中叶结点的个数代表了它是多少个后缀的前缀，即为它在原串中的出现次数。</p>
+<p>这棵树有很多用处，例如我们查询 $t$ 在 $s$ 中的出现次数，只需要把 $t$ 放在这棵树上进行匹配，最终到达的节点的子树中的叶节点数量即为答案。进行一次匹配的时间复杂度为 $\mathcal O (|t|)$ ，这是十分优秀的。</p>
+<p>现在的问题是，这颗字典树的节点数是 $\mathcal O (n^2)$ 的。观察这棵字典树，发现它有很多节点只有一个子节点，形成了若干条单链。我们可以考虑将这些只有一个子节点的节点压缩起来，将形成这样一棵树：</p>
+<p><img src="banana4.png" alt></p>
+<p>这就是串 <code>banana</code> 的后缀树。与字典树不同的是，后缀树的一条边可能有若干个字符。</p>
+<p>串 $s$ 的后缀树的节点数的上界为 $2n+1$ 。算上空后缀的话，一个串的后缀字典树上的叶节点个数为 $n+1$，而后缀树可以认为是这 $n+1$ 个叶节点的虚树，因此节点数上界为 $2n+1$ 。这个上界可以由串 $aaa \cdots aaa$ 达到。</p>
+<h3 id="后缀树的构建方法"><a href="#后缀树的构建方法" class="headerlink" title="后缀树的构建方法"></a>后缀树的构建方法</h3><p>如果你学习过 $\text{SAM}$，后缀树是反串的 $\text{SAM}$ 的 $\text{parent}$ 树，因此可以用建立 $\text{SAM}$ 的 $\text{Blumber}$ 算法来建后缀树。这里介绍另一种直接构建后缀树的方法 $\text{Ukkonen}$ 算法。</p>
+<p>$\text{Ukkonen}$ 算法是一种增量构造算法。我们依次向树中插入串 $s$ 的每一个字符，并在每一次插入之后正确地维护当前的后缀树。</p>
+<h4 id="暴力构建方式"><a href="#暴力构建方式" class="headerlink" title="暴力构建方式"></a>暴力构建方式</h4><p>首先介绍一下一种较为暴力的构建方式，我们用字符串 <code>abbc</code> 来演示一下构建的过程。</p>
+<p>一开始，后缀树中只包含一个初始节点，这个节点是后缀树的根，记为 $0$ 号节点。后缀树上的每一条边用一个整数对 $(l, r)$ 表示，意为这条边上的字符是 $s[l \cdots r]$ 。记当前已经插入的字符串的长度为 $n$ ，每次插入时令 $n + 1$。</p>
+<p>首先插入字符 <code>a</code>， 直接从 $0$ 号节点伸出一条边，标为 $(1, \inf)$ ，指向一个新建的节点。这里的 $\inf$ 表示串的结尾。</p>
+<p><img src="step1.png" alt></p>
+<p>接下来我们插入字符 <code>b</code> ，同样从 $0$ 伸出一条边，标为 $(2, \inf)$。注意到之前延伸出的边 $(1,\inf)$ 的意义自动地发生了变化，随着串结尾的改变，其表示的串从 <code>a</code> 变为了 <code>ab</code> 。这样是正确的，因为之前所有后缀都已经以一个叶节点的形式出现在树中，只需要向所有叶节点的末端插入一个当前字符即可。</p>
+<p><img src="step2.png" alt></p>
+<p>接下来，我们要再次插入一个字符 <code>b</code>，但是<code>b</code>是之前已经插入的字符串的一个子串，因此原树已经包含 <code>b</code> ，我们什么都不能做，让边的意义自动变化即可。但是，这样会出现一个没有以叶节点形式存在于原树中的后缀。以后插入时，我们不能直接向所有叶节点的末端插入一个当前字符了。</p>
+<p><img src="step3.png" alt></p>
+<p>至此，我们引入一个概念 <strong>剩余后缀长度</strong> ，表示当前<strong>最长的</strong>只是隐式地包含包在树中，而没有实际出现的后缀的长度，记为 $rem$。我们可以知道这个后缀为$s[n - rem+1 \cdots n]$。每次插入一个新字符时，我们让 $rem+1$，表示这个没有实际出现的后缀长度 $+1$。不难发现，这个后缀的所有后缀也都没有实际出现，因此，当成功插入一个后缀时，我们应令 $rem-1$，表示当前最长的被隐式包含的后缀是原来后缀删去首字符得到的。</p>
+<p>接下来我们插入另一个 <code>b</code> 。因为前一个 <code>b</code> 没有插入成功，此时 $rem=2$ ，要插入的后缀为 <code>bb</code>。我们从根开始向下寻找 <code>bb</code> ，发现也在原树之中。</p>
+<p><img src="step4.png" alt></p>
+<p>接下来我们插入 <code>c</code>，此时 $rem=3$ ，因此我们需要沿着根向下寻找 <code>bbc</code>，发现不在原树中。我们需要在 <code>bb</code> 处代表的节点延伸出一条为 <code>c</code> 的出边。但发现这个节点其实不存在，而是包含在一条边中，因此我们需要分裂这条边，创建一个新节点，再在创建的节点处伸展出 <code>c</code>。此时成功插入，令 $rem-1$。</p>
+<p><img src="step5.png" alt></p>
+<blockquote>
+<p>完成插入后缀 $”bbc”$ ，分裂出节点 $3$ ，插入节点 $4$ 。</p>
+</blockquote>
+<p>同理， <code>bc</code> 和 <code>c</code> 都不在原树之中，因此我们将一直插入，直到 $rem$ 减为 $0$ 。</p>
+<p><img src="step6.png" alt></p>
+<blockquote>
+<p>完成插入后缀 $”bc”$ 和 $”c”$，分裂出节点 $5$，插入节点 $6$ 和 $7$ 。</p>
+</blockquote>
+<p>最后我们插入终止符 <code>$</code> ，构建过程结束。</p>
+<p>这样构造的后缀树是正确的，但是，这样每次暴力从根向下寻找并插入的复杂度可以达到 $\mathcal O (n^2)$ ，我们需要优化这一过程。</p>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>首先，我们采用一个三元组 $(now,char,len)$ 来描述当前这个最长的被隐式包含的后缀 $s[n-rem+1 \cdots n]$。沿着节点 $now$ 的开头为 $char$ 的出边走长度 $len$ 到达的位置应该唯一表示一个字符串，我们通过维护 $(now,char,len)$ 使得这个字符串等于$s[n-rem+1 \cdots n]$ 。同时注意到 $char$ 等于 $s_{n-rem+1}$，因此我们只需要维护 $now$ 和 $len$ 。每次插入新的字符时，我们只需要从 $now$ 和 $len$ 描述的位置查找即可。</p>
+<h4 id="后缀链接"><a href="#后缀链接" class="headerlink" title="后缀链接"></a>后缀链接</h4><p>对于一个字符串，我们记其真后缀为它所有不等于原串的后缀中长度最大的，例如 <code>ouuan</code> 的真后缀为 <code>uuan</code>。对于后缀树中的所有非叶节点，我们维护一个指针，指向它所代表的字符串的真后缀所对应的节点，称为其这个节点的<strong>后缀链接</strong>。显然，这个真后缀对应的一定是一个节点，而不是在一条边中。</p>
+<p>特别地，如果这个串的真后缀是空串，它的后缀链接指向结点 $0$ 。</p>
+<p><img src="suffixlink.png" alt></p>
+<blockquote>
+<p>串 $”abbcabbd”$ 的后缀树的后缀链接。</p>
+</blockquote>
+<p>当一次成功插入之后，暴力的做法是使 $rem-1$ ，并从根向下找到 $s[n-rem+1 \cdots n]$ 对应的位置继续插入。不难发现这样找到的节点是之前所在节点的后缀链接指向的节点，在正确维护后缀链接之后，我们就可以不需要每次从根向下查找，成功插入之后可以直接跳到后缀链接处。特别地，如果当前所在节点为 $0$ ，我们应使 $len -1$。</p>
+<p>那么如何构建后缀链接呢？不难发现，当一个后缀被插入之后，下一个插入的后缀应该是当前插入的后缀的真后缀，因此，下一次插入时产生的节点的父节点一定是当前所在节点的后缀链接指向的节点（这个父节点可能是分裂产生的，也可能是原来就存在的）。在一轮插入之中，将每个节点的后缀链接指向下一次插入的节点的父节点即可。</p>
+<h4 id="text-Ukkonen-算法流程"><a href="#text-Ukkonen-算法流程" class="headerlink" title="$\text{Ukkonen}$ 算法流程"></a>$\text{Ukkonen}$ 算法流程</h4><p>$\text{Ukkonen}$ 算法的流程可以描述为如下：</p>
+<p>首先创建一棵空后缀树，仅存在节点 $0$ ，令 $len=0$，$now=0$，$n=0$ 。接下来依次对原串的每一个字符进行一轮插入。</p>
+<p>1.在一轮插入中，首先令 $n+1$，$len+1$ 。注意到 $len$ 有可能超过 $now$ 的出边的长度，这时候应该沿着这条出边跳到这条出边的下一个节点，这样才能正确维护 $len$ 和 $now$ 。记在这一轮插入中上一个被访问的节点为 $last$ ，一开始令 $last=0$ 。</p>
+<p>2.找到 $now$ 的开头为 $s_{n-rem+1}$ 的出边。</p>
+<p>3.如果不存在这样的出边，新建一条出边指向一个新的节点，将 $last$ 的后缀链接指向 $now$，然后将 $last$ 变为 $now$ 。</p>
+<p>4.否则，比对出边上第 $len$ 个字符和将要插入的字符，</p>
+<p>​    a.如果相等，则插入失败，同样如 3 中更新 $last$ 的后缀链接，然后退出这轮插入。</p>
+<p>​    b.如果不相等，则在第 $len$ 个字符处新建一个节点 $u$ 分裂这条边，将 $last$ 的后缀链接指向 $u$ ，并且将 $last$ 变为 $u$。然后在这个新建的节点处新建一条表示将要插入的字符的出边，指向另一个新建的节点。</p>
+<p>5.如果 $now \neq 0$，则令 $now$ 跳到 $now$ 的后缀链接指向的节点，否则令 $len-1$。若 $len=0$，结束这一轮插入。</p>
+<h4 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h4><p>首先，每次插入一个字符将使 $rem +1$ 。无论是分裂边还是新建节点，操作，都将以 $\mathcal O (1)$ 的代价使 $rem -1$ 。容易看出算法复杂度为线性。</p>
+<p>记 $n=|s|$，这个算法能够在 $\mathcal O(n \cdot |\Sigma|)$ 的时间内构建后缀树。如果采用 $\text{map}$ 等数据结构实现子节点列表，可以做到 $\mathcal O(n\cdot \log|\Sigma|)$ 。</p>
+<h4 id="text-C-实现"><a href="#text-C-实现" class="headerlink" title="$\text{C++}$ 实现"></a>$\text{C++}$ 实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">   在这份代码实现中，rem表示的是len，0号节点的实际编号为1</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">   上文中提到的未插入后缀数rem没有被维护，而是被len和now表示</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">   len[u]和start[u]表示u的父边在s中的起点和长度，</span></span><br><span class="line"><span class="comment">   即u的父边代表s[start[u] ... start[u]+len[u]-1]</span></span><br><span class="line"><span class="comment">   	</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">suffixTree</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> link[maxn&lt;&lt;<span class="number">1</span>],len[maxn&lt;&lt;<span class="number">1</span>],start[maxn&lt;&lt;<span class="number">1</span>],s[maxn&lt;&lt;<span class="number">1</span>],n,tail,now,rem,ch[maxn&lt;&lt;<span class="number">1</span>][<span class="number">27</span>];</span><br><span class="line">  suffixTree ():tail(<span class="number">1</span>),n(<span class="number">0</span>),rem(<span class="number">0</span>),now(<span class="number">1</span>) &#123;len[<span class="number">0</span>]=inf;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">newnode</span><span class="params">(<span class="keyword">int</span> st,<span class="keyword">int</span> le)</span></span>&#123;</span><br><span class="line">    link[++tail]=<span class="number">1</span>;start[tail]=st;len[tail]=le;<span class="keyword">return</span> tail;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">extend</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">    s[++n]=x;rem++; <span class="comment">//1</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> last=<span class="number">1</span>;rem;)&#123;</span><br><span class="line">      <span class="keyword">while</span> (rem&gt;len[ch[now][s[n-rem+<span class="number">1</span>]]]) </span><br><span class="line">                rem-=len[now=ch[now][s[n-rem+<span class="number">1</span>]]]; <span class="comment">// 2</span></span><br><span class="line">      <span class="keyword">int</span> &amp;v=ch[now][s[n-rem+<span class="number">1</span>]];<span class="keyword">int</span> c=s[start[v]+rem<span class="number">-1</span>];</span><br><span class="line">      <span class="keyword">if</span> (!v||x==c)&#123;</span><br><span class="line">        link[last]=now;last=now;</span><br><span class="line">        <span class="keyword">if</span> (!v) v=newnode(n-rem+<span class="number">1</span>,inf); <span class="comment">//3</span></span><br><span class="line">        <span class="keyword">else</span> <span class="comment">/*if (x==c)*/</span> <span class="keyword">break</span>; <span class="comment">//4.a</span></span><br><span class="line">      &#125;<span class="keyword">else</span>&#123; <span class="comment">//4.b</span></span><br><span class="line">        <span class="keyword">int</span> u=newnode(start[v],rem<span class="number">-1</span>);</span><br><span class="line">        ch[u][c]=v;ch[u][x]=newnode(n,inf); <span class="comment">//分裂</span></span><br><span class="line">        start[v]+=rem<span class="number">-1</span>;len[v]-=rem<span class="number">-1</span>; </span><br><span class="line">        link[last]=v=u;last=u;</span><br><span class="line">      &#125; <span class="keyword">if</span> (now==<span class="number">1</span>) rem--;<span class="keyword">else</span> now=link[now]; <span class="comment">//5</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后缀树和其他字符串数据结构的关系"><a href="#后缀树和其他字符串数据结构的关系" class="headerlink" title="后缀树和其他字符串数据结构的关系"></a>后缀树和其他字符串数据结构的关系</h3><p>如果你学过 $\text{SAM}$，后缀树是反串的 $\text{SAM}$ 的 $\text{parent}$ 树，因为后缀树的一个节点的实质是一个 $\text{leftpos}$ 等价类，而 $\text{SAM}$ 的节点代表的是一个 $\text{rightpos}$ 等价类。</p>
+<p>后缀树的dfs序就是后缀数组。后缀树的一个子树也就对应到后缀数组上的一个区间。后缀树上两个后缀的 lcp 是它们对应的叶节点的 lca，因此，后缀数组的 height 的结论可以理解为树上若干个节点的 lca 等于dfs序最小的和最大的节点的lca。</p>
+<p>后缀树的后缀链接和AC自动机的fail指针的定义非常类似，后缀树+后缀链接也可以认为是压缩过的后缀字典树的AC自动机。</p>
+<h3 id="后缀树的应用"><a href="#后缀树的应用" class="headerlink" title="后缀树的应用"></a>后缀树的应用</h3><p>下面我们来看一些 $\text{SAM}$ 可以解决的问题，并尝试用后缀树解决。</p>
+<blockquote>
+<p>给定文本串 $s$ 和多个模式串 $t$，查询字符串 $t$ 在 $s$ 中的出现次数。</p>
+</blockquote>
+<p>对 $s$ 建后缀树，直接从根开始，沿着树边向下匹配，最终到达的节点的子树中的叶节点的个数表示 $t$ 是 $s$ 的多少个后缀的前缀，即在 $s$ 中的出现次数。</p>
+<blockquote>
+<p>给一个字符串 $s$ ，计算 $s$ 的不同子串的个数。</p>
+</blockquote>
+<p>对 $s$ 建后缀树，答案为 $s$ 的所有边的长度之和，因为 $s$ 的每一条边都压缩着若干个节点，其中每一个节点到根的路径都表示 $s$ 的一个子串。</p>
+<blockquote>
+<p>给定两个字符串 $s$ 和 $t$ ，求它们的最长公共子串。</p>
+</blockquote>
+<p>新建一个字符串 $s +  \text{终止符1} + t + \text{终止符2}$，并对其建后缀树。现在问题是，对于一个叶节点，需要判断它属于哪个字符串，即它代表的字符串是哪个字符串的后缀。稍加观察可以发现，一个叶节点属于在这个叶节点的父边表示的字符串中第一个出现的终止符所属的字符串。答案即为最深的，子树中同时包含属于 $s$ 的叶节点和 $t$ 的叶节点的节点的深度。</p>
+<h3 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h3><p><a href="https://www.luogu.org/problem/P3804" target="_blank" rel="noopener">【模板】后缀自动机</a></p>
+<p><a href="https://www.luogu.org/problem/P1117" target="_blank" rel="noopener">[NOI2016]优秀的拆分</a></p>
+<p><a href="https://www.luogu.org/problem/P4094" target="_blank" rel="noopener">[HEOI2016/TJOI2016]字符串</a></p>
+<p><a href="https://www.luogu.org/problem/P5284" target="_blank" rel="noopener">[十二省联考2019]字符串问题</a></p>
+<p><a href="https://codeforces.com/problemset/problem/204/E" target="_blank" rel="noopener">CF204E Little Elephant and Strings</a></p>
+<p>其实各种 $\text{SAM}$ 或者 $\text{SA}$ 题后缀树都可以写。</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/字符串/" rel="tag"># 字符串</a>
+          
+            <a href="/tags/后缀树/" rel="tag"># 后缀树</a>
+          
+            <a href="/tags/教程/" rel="tag"># 教程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/29/挑战-sendrho-题解/" rel="next" title="挑战 sendrho 题解">
+                <i class="fa fa-chevron-left"></i> 挑战 sendrho 题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80NTQ2MC8yMTk3Mg=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="/images/a2.jpg" alt="EternalAlexander">
+  
+  <p class="site-author-name" itemprop="name">EternalAlexander</p>
+  <div class="site-description motion-element" itemprop="description">一个彩笔的博客</div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/EternalAlexander" title="GitHub &rarr; https://github.com/EternalAlexander" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.luogu.org/space/show?uid=48355" title="洛谷 &rarr; https://www.luogu.org/space/show?uid=48355" rel="noopener" target="_blank"><i class="fa fa-fw fa-code"></i>洛谷</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.codeforces.com/profile/EternalAlexander" title="Codeforces &rarr; https://www.codeforces.com/profile/EternalAlexander" rel="noopener" target="_blank"><i class="fa fa-fw fa-code"></i>Codeforces</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-globe"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://ouuan.github.io" title="https://ouuan.github.io" rel="noopener" target="_blank">ouuan</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.mickey-snow.space/" title="https://www.mickey-snow.space/" rel="noopener" target="_blank">Mickey-Snow</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.xht37.com" title="https://www.xht37.com" rel="noopener" target="_blank">xht37</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/PinkRabbit/" title="https://www.cnblogs.com/PinkRabbit/" rel="noopener" target="_blank">PinkRabbit</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://leverimmy.github.io/" title="https://leverimmy.github.io/" rel="noopener" target="_blank">Clever_Jimmy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://minagami.github.io" title="https://minagami.github.io" rel="noopener" target="_blank">zgjjj</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于本文"><span class="nav-number">1.</span> <span class="nav-text">关于本文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在你阅读之前"><span class="nav-number">2.</span> <span class="nav-text">在你阅读之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前置约定"><span class="nav-number">3.</span> <span class="nav-text">前置约定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀树是什么"><span class="nav-number">4.</span> <span class="nav-text">后缀树是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀树的构建方法"><span class="nav-number">5.</span> <span class="nav-text">后缀树的构建方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#暴力构建方式"><span class="nav-number">5.1.</span> <span class="nav-text">暴力构建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优化"><span class="nav-number">5.2.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后缀链接"><span class="nav-number">5.3.</span> <span class="nav-text">后缀链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#text-Ukkonen-算法流程"><span class="nav-number">5.4.</span> <span class="nav-text">$\text{Ukkonen}$ 算法流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#时间复杂度分析"><span class="nav-number">5.5.</span> <span class="nav-text">时间复杂度分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#text-C-实现"><span class="nav-number">5.6.</span> <span class="nav-text">$\text{C++}$ 实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀树和其他字符串数据结构的关系"><span class="nav-number">6.</span> <span class="nav-text">后缀树和其他字符串数据结构的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀树的应用"><span class="nav-number">7.</span> <span class="nav-text">后缀树的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例题"><span class="nav-number">8.</span> <span class="nav-text">例题</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EternalAlexander</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.2.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+
+
+<script>
+  window.livereOptions = {
+    refer: '2019/10/31/后缀树简介/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
